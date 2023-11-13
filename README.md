@@ -6,4 +6,4 @@
 
 [Flask 入门教程 3.0](https://helloflask.com/book/3/)
 
-- 学习笔记(note.md)
+- [学习笔记](note.md)
