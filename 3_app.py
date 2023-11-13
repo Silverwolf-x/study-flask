@@ -1,7 +1,7 @@
 # 第 3 章：模板
 from flask import Flask, render_template
 
-name = 'Grey Li'
+name = 'Silverwolf-x'
 movies = [
     {'title': 'My Neighbor Totoro', 'year': '1988'},
     {'title': 'Dead Poets Society', 'year': '1989'},
@@ -17,7 +17,7 @@ movies = [
 app = Flask(__name__)
 @app.route('/')
 def index():
-    return render_template('3_index.html', name=name, movies=movies)
+    return render_template('index.html', name=name, movies=movies)
 
 if __name__ == "__main__":
     app.run()

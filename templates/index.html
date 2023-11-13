@@ -3,12 +3,17 @@
 <head>
     <meta charset="utf-8">  <!-- 设置字符集为UTF-8，支持各种字符，包括中文 -->
     <title>{{ name }}'s Watchlist</title>  <!-- 设置页面标题，使用变量 name 的值 -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">  <!-- 引入 CSS 文件 -->
 </head>
 <body>
-    <h2>{{ name }}'s Watchlist</h2>  <!-- 创建二级标题，显示 Watchlist 的所有者的名字 -->
+    <h2>
+        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/avatar.png') }}">
+        {{ name }}'s Watchlist
+    </h2>  <!-- 创建二级标题，显示 Watchlist 的所有者的名字 -->
     <!-- 使用 length 过滤器获取 movies 变量的长度 -->
     <p>{{ movies|length }} Titles</p>  <!-- 在段落中显示 movies 变量中电影的数量 -->
-    <ul>
+    <ul class="movie-list">
         {% for movie in movies %}  <!-- 迭代 movies 变量 -->
         <li>{{ movie.title }} - {{ movie.year }}</li>  <!-- 在列表中显示每部电影的标题和年份 -->
         {% endfor %}  <!-- 使用 endfor 标签结束 for 语句 -->
@@ -17,4 +22,5 @@
         <small>&copy; 2018 <a href="http://helloflask.com/book/3">HelloFlask</a></small>  <!-- 显示版权信息和链接到 HelloFlask 网站 -->
     </footer>
 </body>
+<img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}">
 </html>
