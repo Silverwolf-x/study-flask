@@ -114,9 +114,80 @@ sql server配置管理器中，要启用`sql sever配置管理器（本地）--s
 
 ```python
 import pymssql
-from sqlalchemy import create_engine,text
+from sqlalchemy import create_engine
+import pandas as pd
 # '数据库类型+数据库驱动名称://用户名:口令@机器地址/数据库名',echo=True在终端输出日志
 # 'mssql+pymssql://username:password@host/dbname'(无端口号)
-engine = create_engine('mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/pubs?charset=utf8')
+con = create_engine('mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/pubs?charset=utf8')
+print(pd.read_sql('select * from jobs', con))
+```
+
+## 使用flask将虚拟数据存入数据库
+
+1. 手动在ssms中创造flasktest数据库，然后初始化数据库
+
+```python
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/flasktest?charset=utf8'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的监控
+db = SQLAlchemy(app)
+```
+
+2. 初始化属性
+
+```python
+class User(db.Model):  # 表名将会是 user（自动生成，小写处理）
+    id = db.Column(db.Integer, primary_key=True)  # 主键
+    name = db.Column(db.String(20))  # 名字
+    movies = db.relationship("Movie", backref = "User")# 关联下面的外鍵，不是表中col
+class Movie(db.Model):  # 表名将会是 movie
+    id = db.Column(db.Integer, primary_key=True)  # 主键
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)# 外键，用户id
+    title = db.Column(db.String(60))  # 电影标题
+    year = db.Column(db.String(4))  # 电影年份
+```
+
+- 表间一对多关联
+
+先Movie表中设置col的外键属性，然后在User表中设置外键的关联
+
+3. 载入数据函数
+
+```python
+def fake_data(refresh = False):
+    if refresh:
+        db.drop_all()# 清空database的所有表
+        db.create_all()# 按照之前设置的类创建database的表
+    name = 'Silverwolf-x'
+    movies = [
+        {'title': 'My Neighbor Totoro', 'year': '1988'},
+        {'title': 'Dead Poets Society', 'year': '1989'},
+        {'title': 'A Perfect World', 'year': '1993'},
+        {'title': 'Leon', 'year': '1994'},
+        {'title': 'Mahjong', 'year': '1996'},
+        {'title': 'Swallowtail Butterfly', 'year': '1996'},
+        {'title': 'King of Comedy', 'year': '1999'},
+        {'title': 'Devils on the Doorstep', 'year': '1999'},
+        {'title': 'WALL-E', 'year': '2008'},
+        {'title': 'The Pork of Music', 'year': '2012'},
+    ]
+
+    user = User(name=name)
+    db.session.add(user)
+    db.session.commit()# 先commit这个表，自动生成主键id，然后再传到下一个表作为外键
+    # print(user.id)
+
+    for m in movies:
+        movie = Movie(title=m['title'], year=m['year'],user_id = user.id)
+        db.session.add(movie)
+    db.session.commit()
+
+```
+
+4. 在非db.Model类中调用db.session等命令（如def的函数），需要加上`with app.app_context()`
+
+```python
+with app.app_context():
+    fake_data(refresh=True)
 ```
 
