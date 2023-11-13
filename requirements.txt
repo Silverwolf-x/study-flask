@@ -1,0 +1,6 @@
+flask
+# connect SQL Server Management Studio
+flask-sqlalchemy
+pymssql
+# read database
+pandas

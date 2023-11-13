@@ -94,3 +94,20 @@ img src="/images/logo.png" width="258" height="39" />
 
 在页面的 `<head>` 标签内引入这个 CSS 文件
 
+## 数据库
+
+```pip
+pip install flask-sqlalchemy
+```
+
+SQLAlchemy需要使用其他的python的数据库驱动来连接数据库
+
+如果使用mysql，安装pymysql包
+
+如果使用SQL Server Management Studio，安装pymssql包
+
+### SQL Server Management Studio连接
+
+默认有一个初始sql server账户：sa，密码为123456
+
+sql server配置管理器中，要启用`sql sever配置管理器（本地）--sql sever`和`sql server网络配置--TCP/IP`
