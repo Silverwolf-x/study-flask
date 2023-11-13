@@ -111,3 +111,12 @@ SQLAlchemy需要使用其他的python的数据库驱动来连接数据库
 默认有一个初始sql server账户：sa，密码为123456
 
 sql server配置管理器中，要启用`sql sever配置管理器（本地）--sql sever`和`sql server网络配置--TCP/IP`
+
+```python
+import pymssql
+from sqlalchemy import create_engine,text
+# '数据库类型+数据库驱动名称://用户名:口令@机器地址/数据库名',echo=True在终端输出日志
+# 'mssql+pymssql://username:password@host/dbname'(无端口号)
+engine = create_engine('mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/pubs?charset=utf8')
+```
+
