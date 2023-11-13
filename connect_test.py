@@ -18,7 +18,8 @@ def get_mysql_engine():
 def get_mssql_engine():
     # '数据库类型+数据库驱动名称://用户名:口令@机器地址/数据库名',
     # 'mssql+pymssql://username:password@host/dbname'(无端口号)
-    engine = create_engine('mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/pubs?charset=utf8', echo=True)
+    engine = create_engine('mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/pubs?charset=utf8')
+    # engine = create_engine('mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/pubs?charset=utf8', echo=True)
     return engine
 
 if __name__ == '__main__':
