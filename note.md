@@ -1,5 +1,9 @@
 # flask学习记录
 
+[Flask 入门教程 3.0](https://helloflask.com/book/3/)
+
+[TOC]
+
 ## http响应码
 
 1. [信息响应](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status#信息响应) (`100`–`199`)
@@ -65,6 +69,7 @@ def hello():
 img src="/images/logo.png" width="258" height="39" />
 <li>无序 HTML 列表</li>
 <!DOCTYPE> 声明的目的是让浏览器能够正确地渲染页面
+<meta name="viewport" content="width=device-width, initial-scale=1.0">设置页面的视口，让页面根据设备的宽度来自动缩放页面，这样会让移动设备拥有更好的浏览体验
 ```
 
 ## 静态文件 static
@@ -189,5 +194,44 @@ def fake_data(refresh = False):
 ```python
 with app.app_context():
     fake_data(refresh=True)
+```
+
+## 模板优化
+
+1. 减少在 `render_template()` 函数里传入的关键字user参数，避免冗余
+
+```python
+@app.context_processor
+def inject_user():  # 函数名可以随意修改
+    user = User.query.first()
+    return dict(user=user)  # 需要返回字典，等同于 return {'user': user}
+```
+
+这个函数返回的变量（以字典键值对的形式）将会统一注入到每一个模板的上下文环境中，因此可以在模板中直接使用 `user` 变量。
+
+2. 基模板（base template）
+
+- 基模板中包含完整的 HTML 结构和导航栏、页首、页脚等通用部分。在子模板里，我们可以使用 `extends` 标签来声明继承自某个基模板
+
+- 基模板中需要在实际的子模板中追加或重写的部分则可以定义成块（block）。块使用 `block` 标签创建， `{% block 块名称 %}` 作为开始标记，`{% endblock %}` 或 `{% endblock 块名称 %}` 作为结束标记。通过在子模板里定义一个同样名称的块，你可以向基模板的对应块位置追加或重写内容。
+
+- 默认的块重写行为是覆盖，如果你想向父块里追加内容，可以在子块中使用 `super()` 声明，即 `{{ super() }}`。
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+<p>{{ movies|length }} Titles</p>
+<ul class="movie-list">
+    {% for movie in movies %}
+    <li>{{ movie.title }} - {{ movie.year }}
+        <span class="float-right">
+            <a class="imdb" href="https://www.imdb.com/find?q={{ movie.title }}" target="_blank" title="Find this movie on IMDb">IMDb</a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+<img alt="Walking Totoro" class="totoro" src="{{ url_for('static', filename='images/totoro.gif') }}" title="to~to~ro~">
+{% endblock %}
 ```
 
