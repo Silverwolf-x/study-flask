@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Edit item</h3>
+<form method="post">
+    <!-- 
+        在`index.html`的按钮中，在url中传入movie_id
+
+        在`app.py`对应的视图函数`edit(movie_id)`中，通过url的传入movie_id，设定参数`movie = Movie.query.get_or_404(movie_id)`，最后返回`render_template('edit.html', movie=movie)`
+
+        将movie传入`edit.html`，从而可以在输入框中默认显示原来的表单值`value="{{ movie.year }}">`
+    -->
+
+    Name <input type="text" name="title" autocomplete="off" required value="{{ movie.title }}">
+    Year <input type="text" name="year" autocomplete="off" required value="{{ movie.year }}">
+    <input class="btn" type="submit" name="submit" value="Update">
+</form>
+{% endblock %}
